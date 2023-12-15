@@ -1,0 +1,8 @@
+<!-- report_content.html -->
+{% extends 'base.html' %} {% block content %}
+<h2>Report Inappropriate Content</h2>
+<form method="post" action="{% url 'report_content' post_id=post_id %}">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Submit Report</button>
+</form>
+{% endblock %}

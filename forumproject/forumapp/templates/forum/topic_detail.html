@@ -1,0 +1,71 @@
+{% extends 'base.html' %} {% block content %}
+<!-- forum/topic_detail.html -->
+
+<h2>{{ topic.name }}</h2>
+<p>{{ topic.description }}</p>
+
+<h3>Posts:</h3>
+<ul>
+  {% for post in topic.posts.all %}
+  <li>
+    {% if not post.is_hidden %}
+    <div class="post">
+      <div class="post-header">
+        <span class="username">{{ post.created_by.username }}</span>
+        <span class="timestamp">{{ post.created_at|date:"F d, Y H:i:s" }}</span>
+      </div>
+      <div class="post-content">
+        {{ post.content | linebreaks }}
+        <!-- Render line breaks properly -->
+      </div>
+      <div class="post-footer">
+        <div class="score">Score: {{ post.calculate_score }}</div>
+        <form method="post" action="{% url 'forumapp:upvote_post' post.id %}">
+          {% csrf_token %}
+          <button type="submit">Upvote</button>
+        </form>
+        <form method="post" action="{% url 'forumapp:downvote_post' post.id %}">
+          {% csrf_token %}
+          <button type="submit">Downvote</button>
+        </form>
+      </div>
+
+      <h4>Replies:</h4>
+      <ul>
+        {% for reply in post.replies.all %}
+        <li>
+          {% if not reply.is_hidden %}
+          <div class="reply">
+            <div class="reply-header">
+              <span class="username">{{ reply.created_by.username }}</span>
+              <span class="timestamp"
+                >{{ reply.created_at|date:"F d, Y H:i:s" }}</span
+              >
+            </div>
+            <div class="reply-content">{{ reply.content | linebreaks }}</div>
+            <div class="reply-footer">
+              <div class="score">Score: {{ reply.calculate_score }}</div>
+              <form method="post" action="{% url 'upvote_reply' reply.id %}">
+                {% csrf_token %}
+                <button type="submit">Upvote</button>
+              </form>
+              <form method="post" action="{% url 'downvote_reply' reply.id %}">
+                {% csrf_token %}
+                <button type="submit">Downvote</button>
+              </form>
+            </div>
+          </div>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+
+      <a href="{% url 'post_reply' post.id %}">Reply to this post</a>
+    </div>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+
+<a href="{% url 'post_reply' topic.id %}">Post a Reply</a>
+{% endblock %}

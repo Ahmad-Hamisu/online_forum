@@ -1,0 +1,9 @@
+<!-- topics_in_category.html -->
+{% extends 'base.html' %} {% block content %}
+<h2>Topics in {{ category.name }}</h2>
+<ul>
+  {% for topic in topics %}
+  <li><a href="{% url 'topic_detail' topic.id %}">{{ topic.title }}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
